@@ -1,0 +1,58 @@
+//#include <WiFiNINA.h>
+#include <WiFiS3.h>
+#include <ThingSpeak.h>
+
+// 1) Wi-Fi credentials
+char ssid[] = "Smarter";
+char pass[] = "a1b2c3d4";
+
+// 2) ThingSpeak channel info
+unsigned long channelID = 2918668;     // e.g., 1234567
+const char* writeAPIKey = "ZIZX02LSN161BSV6"; // e.g., "ABCD1234...."
+
+// Networking client
+WiFiClient client;
+
+int status = WL_IDLE_STATUS;
+
+void setup() {
+  Serial.begin(9600);
+  while (!Serial) { }  // Wait for Serial Monitor (optional)
+
+  // --- Connect to Wi-Fi ---
+  Serial.println("Connecting to Wi-Fi...");
+  while (status != WL_CONNECTED) {
+    status = WiFi.begin(ssid, pass);
+    delay(5000);
+    Serial.print(".");
+  }
+
+  Serial.println("\n Connected to Wi-Fi!");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  // --- Start ThingSpeak ---
+  ThingSpeak.begin(client);
+}
+
+void loop() {
+  // Example data (replace this with a sensor reading)
+  int value = random(20, 31);  // random value from 20 to 30
+
+  // Put value into Field 1
+  ThingSpeak.setField(4, value);
+
+  // Send to ThingSpeak
+  int httpCode = ThingSpeak.writeFields(channelID, writeAPIKey);
+
+  if (httpCode == 200) {
+    Serial.print("Uploaded value: ");
+    Serial.println(value);
+  } else {
+    Serial.print("Upload failed, HTTP code: ");
+    Serial.println(httpCode);
+  }
+
+  // ThingSpeak free accounts limit updates (recommend 15+ seconds; 20s is safe)
+  delay(20000);
+}
