@@ -1,5 +1,5 @@
 const byte ledPin = 2;
-const byte interruptPin = 3;
+const byte interruptPin = 0;
 volatile byte state;
 
 void setup() {
