@@ -1,21 +1,24 @@
 const byte ledPin = 2;
-const byte interruptPin = 0;
+const byte interruptPin = 3;
 volatile byte state;
 
 void setup() {
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, LOW);
   pinMode(interruptPin, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(interruptPin), blink, CHANGE);
+  Serial.begin(9600);
+  attachInterrupt(digitalPinToInterrupt(interruptPin), isr, CHANGE);
 }
 
 void loop() {
   // nothing in loop
 }
 
-void blink() {
+void isr() {
   state = !state;
   Serial.println("Interrupt triggered!"); // Optional debug message
+  Serial.println(digitalRead(interruptPin));
   delay(1000);    
   digitalWrite (ledPin, state);
+  digitalWrite (LED_BUILTIN, state);
 }
