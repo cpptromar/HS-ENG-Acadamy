@@ -1,3 +1,4 @@
+//UNO R4 A device
 void setup() {
   Serial.begin(115200);     // USB Serial Monitor
   Serial1.begin(9600);      // UART on pins D0/D1
@@ -15,4 +16,24 @@ void loop() {
     Serial.println(msg);
   }
   delay(1000);
+}
+
+//UNO R4 B device
+void setup() {
+  Serial.begin(115200);   // USB Serial to your PC (Serial Monitor)
+  Serial1.begin(9600);    // Hardware UART on MKR pins 13/14
+}
+
+void loop() {
+  if (Serial1.available()) {
+    String msg = Serial1.readStringUntil('\n');
+    Serial.print("Received: ");
+    Serial.println(msg);
+  }
+  delay(1000);
+  
+  Serial1.println("Hello from UNO R4 B");
+  Serial.println("UNO R4 B: Msg Sent");
+  delay(1000);
+
 }
